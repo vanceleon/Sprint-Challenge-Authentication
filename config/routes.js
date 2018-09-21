@@ -82,7 +82,7 @@ function login(req, res) {
         res.status(200).json(token);
 
       }else{
-        console.log("didnt pass login")
+        // console.log("didnt pass login")
         res.status(401).json({message: "You shall not hear jokes! Go back to the shadows"});
       }
     })
