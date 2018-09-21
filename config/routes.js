@@ -5,7 +5,6 @@ const db = require("../database/dbConfig.js");
 const jwtKey = require("../_secrets/keys");
 const jwt = require("jsonwebtoken");
 
-
 module.exports = server => {
   server.post("/api/register", register);
   server.post("/api/login", login);
@@ -13,7 +12,6 @@ module.exports = server => {
 };
 
 const secret = jwtKey.jwtKey;
-
 
 const generateToken = users => {
   const payload = { username: users.username };
@@ -54,36 +52,39 @@ function register(req, res) {
           console.log("Error generating Token: ", err);
         });
     });
-  }
+}
 
-  //login 
-  // axios
-  //   .post("http://localhost:3300/api/login")
-  //   .then(response => {
-  //     localStorage.setItem("jwt", response.data);
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  
+//login
+// axios
+//   .post("http://localhost:3300/api/login")
+//   .then(response => {
+//     localStorage.setItem("jwt", response.data);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+
 function login(req, res) {
   // implement user login
   const creds = req.body;
   // console.log(creds);
   db("users")
-    .where({username: creds.username})
+    .where({ username: creds.username })
     .first()
     .then(user => {
       // console.log("what is in user ", user)
       // console.log("input password, hashed password: ", creds.password, user.password)
-      if(user && bcrypt.compareSync(creds.password, user.password)) {
-        const token = generateToken(user)
+      if (user && bcrypt.compareSync(creds.password, user.password)) {
+        const token = generateToken(user);
         // console.log("passed login: ", token)
         res.status(200).json(token);
-
-      }else{
+      } else {
         // console.log("didnt pass login")
-        res.status(401).json({message: "You shall not hear jokes! Go back to the shadows"});
+        res
+          .status(401)
+          .json({
+            message: "You shall not hear jokes! Go back to the shadows"
+          });
       }
     })
     .catch(err => res.status(500).send(err));
