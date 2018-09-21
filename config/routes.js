@@ -69,14 +69,16 @@ function register(req, res) {
 function login(req, res) {
   // implement user login
   const creds = req.body;
-  console.log(creds);
+  // console.log(creds);
   db("users")
     .where({username: creds.username})
     .first()
     .then(user => {
+      // console.log("what is in user ", user)
+      // console.log("input password, hashed password: ", creds.password, user.password)
       if(user && bcrypt.compareSync(creds.password, user.password)) {
-        
-        console.log("passed login: ", token)
+        const token = generateToken(user)
+        // console.log("passed login: ", token)
         res.status(200).json(token);
 
       }else{
