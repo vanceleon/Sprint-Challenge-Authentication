@@ -25,7 +25,7 @@ const generateToken = users => {
   return jwt.sign(payload, secret, options);
 };
 
-
+//Register
 // axios
 // .post("http://localhost:3300/api/register",{
 //   user: {
@@ -54,18 +54,37 @@ function register(req, res) {
           console.log("Error generating Token: ", err);
         });
     });
-}
+  }
 
+  //login 
+  // axios
+  //   .post("http://localhost:3300/api/login")
+  //   .then(response => {
+  //     localStorage.setItem("jwt", response.data);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+  
 function login(req, res) {
   // implement user login
-  axios
-    .post("http://localhost:3300/api/login")
-    .then(response => {
-      localStorage.setItem("jwt", response.data);
+  const creds = req.body;
+  console.log(creds);
+  db("users")
+    .where({username: creds.username})
+    .first()
+    .then(user => {
+      if(user && bcrypt.compareSync(creds.password, user.password)) {
+        
+        console.log("passed login: ", token)
+        res.status(200).json(token);
+
+      }else{
+        console.log("didnt pass login")
+        res.status(401).json({message: "You shall not hear jokes! Go back to the shadows"});
+      }
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(err => res.status(500).send(err));
 }
 
 function getJokes(req, res) {
